@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using UnityEngine;
 
 // MAZE PROC GEN LAB
@@ -14,13 +16,57 @@ public class Pathmaker : MonoBehaviour {
 // STEP 2: ============================================================================================
 // translate the pseudocode below
 
+
+	private int counter = 0;
+	public Transform[] floorPrefab;
+	public Transform pathmakerSpherePrefab;
+
+	public string[] textToSay;
+
+	public Text textThatsSaid;
+
+	public int textInt;
+
+	public static int globalTileCount = 0;
+
+
+	//public bool restartIsTrue;
+	
+
 //	DECLARE CLASS MEMBER VARIABLES:
 //	Declare a private integer called counter that starts at 0; 		// counter var will track how many floor tiles I've instantiated
 //	Declare a public Transform called floorPrefab, assign the prefab in inspector;
 //	Declare a public Transform called pathmakerSpherePrefab, assign the prefab in inspector; 		// you'll have to make a "pathmakerSphere" prefab later
 
+	void Start(){
+
+		//Instantiate (pathmakerSpherePrefab, transform.position, Quaternion.identity);
+
+		//restartIsTrue = true;
+
+	}
 
 	void Update () {
+
+//		if (restartIsTrue) {
+
+		int randomTile = Random.Range (0, floorPrefab.Length);
+		
+			float randomNum = Random.Range (0.0f, 1.0f);
+
+			if (counter < 50 || globalTileCount < 500) {
+				globalTileCount++;
+				Random.Range (0.0f, 1.0f);
+				if (randomNum < 0.25f) {
+					transform.rotation *= Quaternion.Euler (0, 90, 0);
+				} else if (randomNum < 0.5f) {
+					transform.rotation *= Quaternion.Euler (0, -90, 0);
+					//} else if (randomNum < 0.99f){
+
+				} else if (randomNum >= 0.99f) {
+					Instantiate (pathmakerSpherePrefab, transform.position, Quaternion.identity);
+				}
+
 //		If counter is less than 50, then:
 //			Generate a random number from 0.0f to 1.0f;
 //			If random number is less than 0.25f, then rotate myself 90 degrees;
@@ -28,14 +74,54 @@ public class Pathmaker : MonoBehaviour {
 //				... Else if number is 0.99f-1.0f, then instantiate a pathmakerSpherePrefab clone at my current position;
 //			// end elseIf
 
+			Instantiate (floorPrefab[randomTile], transform.position, Quaternion.identity);
+
+				transform.position += transform.forward * 5f;
+				counter++;
+
+//				if (globalTileCount >= 500){
+//				restartIsTrue = false;
+//				}
+
 //			Instantiate a floorPrefab clone at current position;
 //			Move forward ("forward", as in, the direction I'm currently facing) by 5 units;
 //			Increment counter;
 //		Else:
 //			Destroy my game object; 		// self destruct if I've made enough tiles already
+		} else {
+				Destroy (gameObject);
+			}
+
+//			if (Input.GetKeyDown (KeyCode.R)) {
+//				restartAll ();
+//			}
+
+
+//		if (Input.GetKeyDown (KeyCode.R)) {
+//			//Destroy (GameObject.FindWithTag ("breakThis"));
+//			GameObject[] breakAllThese = GameObject.FindGameObjectsWithTag("breakThis");
+//			foreach (GameObject block in breakAllThese) GameObject.Destroy (block);
+//			SceneManager.LoadScene (SceneManager.GetActiveScene ().buildIndex);
+//		}
+
+
+
 	}
 
-} // end of class scope
+	void OnLevelWasLoaded(int level){ // Ricardo Reiter, stackoverflow https://stackoverflow.com/questions/26934920/how-do-i-restart-my-score-reset-static-score-in-reloading-scene-in-unity
+		Pathmaker.globalTileCount = 0;
+		textInt = Random.Range (0, textToSay.Length);
+		textThatsSaid.text = textToSay [textInt];
+	}
+
+//	void restartAll(){
+//		restartIsTrue = true;
+//		GameObject[] breakAllThese = GameObject.FindGameObjectsWithTag("breakThis");
+//		foreach (GameObject block in breakAllThese) GameObject.Destroy (block);
+//		SceneManager.LoadScene (SceneManager.GetActiveScene ().buildIndex);
+//	}
+
+}// end of class scope
 
 // MORE STEPS BELOW!!!........
 
